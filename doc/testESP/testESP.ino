@@ -11,7 +11,7 @@ void setup() {
   delay(2000); // Attendi 2 secondi per permettere al monitor seriale di connettersi
 
   // Messaggio di debug per verificare l'avvio della seriale
-  Serial.println("Serial communication started");
+  Serial.println("AAA");
 
   // Configura i pin dei LED come uscite
   pinMode(LED1_PIN, OUTPUT);
