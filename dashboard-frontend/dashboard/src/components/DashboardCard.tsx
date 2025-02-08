@@ -31,7 +31,7 @@ function DashboardCard({
   };
 
   return (
-    <Card sx={{ maxWidth: 342 }}>
+    <Card sx={{ maxWidth: "342px" , width:"342px"}}>
       <CardHeader
         avatar={<Avatar>
             {icon}

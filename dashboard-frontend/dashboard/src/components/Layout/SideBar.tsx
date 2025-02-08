@@ -11,6 +11,8 @@ import NightsStayIcon from '@mui/icons-material/NightsStay';
 import LightModeIcon from '@mui/icons-material/LightMode';
 import Temperature from "../../Pages/Temperature";
 import useIsMobile from "../../hooks/isMobile";
+import Window from "../../Pages/Window";
+import WindowTwoToneIcon from '@mui/icons-material/WindowTwoTone';
 
 interface SideBarProps {
   onActionClick: (component: React.ReactNode) => void;
@@ -41,6 +43,11 @@ export default function SideBar(props: SideBarProps) {
       name: "Temperature",
       icon: <DeviceThermostatIcon />,
       component: <Temperature />,
+    },
+    {
+      name: "Window",
+      icon: <WindowTwoToneIcon />,
+      component: <Window />,
     },
   ];
 
