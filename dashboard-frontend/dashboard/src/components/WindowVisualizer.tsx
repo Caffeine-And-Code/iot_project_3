@@ -51,7 +51,6 @@ function WindowVisualizer({ percentage,isCard }: WindowVisualizerProps) {
       <Paper elevation={isCard?0:3} sx={{ padding: 4, width: "100%",backgroundColor:isDarkMode&&isCard&&"#1E1E1E !important" }}>
         <Stack
           direction="row"
-          spacing={5}
           id="window-visualizer"
           display={"flex"}
           flexWrap={"wrap"}
@@ -66,6 +65,7 @@ function WindowVisualizer({ percentage,isCard }: WindowVisualizerProps) {
             aria-haspopup="true"
             onMouseEnter={handleAngle}
             onMouseLeave={handleAngleClose}
+            padding={1}
           >
             <Gauge
               width={200}
@@ -98,6 +98,7 @@ function WindowVisualizer({ percentage,isCard }: WindowVisualizerProps) {
             aria-haspopup="true"
             onMouseEnter={handlePercentage}
             onMouseLeave={handlePercentageClose}
+            padding={1}
           >
             <Gauge
               width={200}
