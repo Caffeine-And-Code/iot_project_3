@@ -13,6 +13,16 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
+/** media queries for responsiveness */
+@media (max-width: 340px) {
+  h3{
+    font-size: 2em !important;
+  }
+  #root{
+    padding: 0px !important;
+  }
+}
+
 a {
   font-weight: 500;
   color: #646cff;
@@ -26,8 +36,8 @@ body {
   margin: 0;
   display: flex;
   place-items: center;
-  min-width: 320px;
   min-height: 100vh;
+  justify-content: center;
 }
 
 h1 {
