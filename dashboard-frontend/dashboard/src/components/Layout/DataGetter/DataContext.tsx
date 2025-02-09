@@ -27,7 +27,7 @@ export const useDataContext = () => {
 export const DataProvider = ({ children }: { children: React.ReactNode }) => {
     const [temperature, setTemperature] = useState<{ letture: number; temperature: number }[]>([]);
     const [systemStatus, setSystemStatus] = useState<SystemStatus>(SystemStatus.Normal);
-    const [windowPercentage, setWindowPercentage] = useState<number>(0);
+    const [windowPercentage, setWindowPercentage] = useState<number>(-1);
 
     useEffect(() => {
         const socket = io();

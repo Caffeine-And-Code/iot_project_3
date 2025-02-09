@@ -37,18 +37,42 @@ const ThemeProvider = ({ children }: { children: ReactNode }) => {
     },
     components: {
         MuiButtonBase: {
-        styleOverrides: {
-            root: {
+          styleOverrides: {
+              root: {
+              "&:focus": {
+                outline: "none !important", // Rimuove il bordo focus
+              },
+              "&:focus-visible": {
+                  outline: "none !important",
+              },
+              },
+          },
+      },
+      MuiButton:{
+        styleOverrides:{
+          outlined:{
+            color: "inherit !important",
             "&:focus": {
-              outline: "none !important", // Rimuove il bordo focus
-            },
-            "&:focus-visible": {
-                outline: "none !important",
-            },
-            },
-        },
-      },   
-      
+                outline: "none !important", // Rimuove il bordo focus
+              },
+              "&:hover": {
+                outline: "none !important", // Rimuove il bordo focus
+                border: "1px solid white !important",
+              },
+              "&:focus-visible": {
+                  outline: "none !important",
+              },
+          }
+        }
+      },
+      MuiDialog:{
+        styleOverrides:{
+          paper:{
+            backgroundColor: isDarkMode ? '#121212 !important' : '#fff',
+            margin: '0px',
+          }
+        }
+      }, 
     },
 });
 
