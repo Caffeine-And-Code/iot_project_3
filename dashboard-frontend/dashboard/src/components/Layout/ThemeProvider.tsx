@@ -21,7 +21,7 @@ export const useThemeContext = () => {
 };
 
 const ThemeProvider = ({ children }: { children: ReactNode }) => {
-  const [isDarkMode, setIsDarkMode] = useState(false);
+  const [isDarkMode, setIsDarkMode] = useState(localStorage.getItem("darkMode") === "true" || false);
 
   const toggleTheme = () => setIsDarkMode((prev) => !prev);
 
@@ -47,7 +47,8 @@ const ThemeProvider = ({ children }: { children: ReactNode }) => {
             },
             },
         },
-    },
+      },   
+      
     },
 });
 

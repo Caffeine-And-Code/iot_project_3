@@ -5,13 +5,14 @@ import Dashboard from "../../Pages/Dashboard";
 import ThemeProvider from "./ThemeProvider";
 
 function Layout() {
-  const [renderedComponent, setRenderedComponent] = React.useState<ReactNode>(
-    <Dashboard />
-  );
-
   const handleComponentChange = (component: ReactNode) => {
     setRenderedComponent(component);
   };
+  
+  const [renderedComponent, setRenderedComponent] = React.useState<ReactNode>(
+    <Dashboard goToClicked={handleComponentChange}/>
+  );
+
 
   return (
     <ThemeProvider>
@@ -19,11 +20,11 @@ function Layout() {
         <Stack
           spacing={2}
           direction={"column"}
-          sx={{ padding: 2 }}
-          justifyContent={"flex-start"}
+          sx={{ height: "100%" }}
+          justifyContent={"center"}
         >
           <SideBar onActionClick={handleComponentChange} />
-          <Box sx={{ height: "100%", width: "100%" }}>{renderedComponent}</Box>
+          <Box sx={{ height: "100%", width: "100%",display:"flex",justifyContent:"center" }}>{renderedComponent}</Box>
         </Stack>
       </Box>
     </ThemeProvider>

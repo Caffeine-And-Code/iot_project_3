@@ -1,4 +1,4 @@
-import { AppBarProps, Box, Divider, Drawer, IconButton, List, ListItem, ListItemButton, ListItemIcon, ListItemText, SpeedDial, SpeedDialAction, styled, Toolbar, useMediaQuery } from "@mui/material";
+import { AppBarProps, Box, Divider, Drawer, IconButton, List, ListItem, ListItemButton, ListItemIcon, ListItemText, SpeedDial, SpeedDialAction, styled, Toolbar, Typography } from "@mui/material";
 import DashboardIcon from "@mui/icons-material/Dashboard";
 import MuiAppBar from '@mui/material/AppBar';
 import Dashboard from "../../Pages/Dashboard";
@@ -10,6 +10,9 @@ import { useThemeContext } from "./ThemeProvider";
 import NightsStayIcon from '@mui/icons-material/NightsStay';
 import LightModeIcon from '@mui/icons-material/LightMode';
 import Temperature from "../../Pages/Temperature";
+import useIsMobile from "../../hooks/isMobile";
+import Window from "../../Pages/Window";
+import WindowTwoToneIcon from '@mui/icons-material/WindowTwoTone';
 
 interface SideBarProps {
   onActionClick: (component: React.ReactNode) => void;
@@ -34,16 +37,26 @@ export default function SideBar(props: SideBarProps) {
     {
       name: "Dashboard",
       icon: <DashboardIcon />,
-      component: <Dashboard />,
+      component: <Dashboard goToClicked={props.onActionClick}/>,
     },
     {
       name: "Temperature",
       icon: <DeviceThermostatIcon />,
       component: <Temperature />,
     },
+    {
+      name: "Window",
+      icon: <WindowTwoToneIcon />,
+      component: <Window />,
+    },
   ];
 
-  const isMobile = useMediaQuery("(max-width:600px)");
+  const toggleAndSaveTheme = () => {
+    localStorage.setItem("darkMode", isDarkMode ? "false" : "true");
+    toggleTheme();
+  };
+
+  const isMobile = useIsMobile();
 
   if(isMobile) {
     return (
@@ -68,14 +81,14 @@ export default function SideBar(props: SideBarProps) {
             key="Theme"
             icon={isDarkMode ? <NightsStayIcon /> : <LightModeIcon />}
             tooltipTitle="Theme"
-            onClick={toggleTheme}
+            onClick={toggleAndSaveTheme}
           />
       </SpeedDial>
       </>
     );
   }else{
     return (
-      <Box sx={{ display: 'flex' }}>
+      <Box sx={{ display: 'flex',width:"0px",height:"0px" }}>
       <AppBar position="fixed">
         <Toolbar sx={{ justifyContent: 'space-between' }}>
           <IconButton
@@ -94,7 +107,7 @@ export default function SideBar(props: SideBarProps) {
           </IconButton>
           <IconButton
           color="inherit"
-            onClick={toggleTheme}
+            onClick={toggleAndSaveTheme}
             edge="start"
             sx={[
               {
@@ -121,6 +134,9 @@ export default function SideBar(props: SideBarProps) {
         open={open}
       >
         <DrawerHeader>
+          <Typography variant="h6" sx={{ flexGrow: 1 }}>
+            Pages
+          </Typography>
           <IconButton onClick={handleDrawerClose}>
               <ChevronLeftIcon />
           </IconButton>
@@ -140,9 +156,7 @@ export default function SideBar(props: SideBarProps) {
         </List>
         
       </Drawer>
-      <Main open={open}>
-        <DrawerHeader />
-      </Main>
+      <DrawerHeader />
     </Box>
     );
   }
@@ -180,26 +194,3 @@ const DrawerHeader = styled('div')(({ theme }) => ({
   justifyContent: 'flex-end',
 }));
 
-const Main = styled('main', { shouldForwardProp: (prop) => prop !== 'open' })<{
-  open?: boolean;
-}>(({ theme }) => ({
-  flexGrow: 1,
-  padding: theme.spacing(3),
-  transition: theme.transitions.create('margin', {
-    easing: theme.transitions.easing.sharp,
-    duration: theme.transitions.duration.leavingScreen,
-  }),
-  marginLeft: `-${drawerWidth}px`,
-  variants: [
-    {
-      props: ({ open }) => open,
-      style: {
-        transition: theme.transitions.create('margin', {
-          easing: theme.transitions.easing.easeOut,
-          duration: theme.transitions.duration.enteringScreen,
-        }),
-        marginLeft: 0,
-      },
-    },
-  ],
-}));
