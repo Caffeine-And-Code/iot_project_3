@@ -4,6 +4,7 @@
 
 #define MSG_BUFFER_SIZE 50
 #define CONNECTION_TIMEOUT 10000
+#define PAUSE_FREQUENCY -1
 
 WiFiClient espClient;
 PubSubClient client(espClient);
@@ -13,6 +14,7 @@ const char* __ssid;
 const char* __password;
 const char* __mqtt_server;
 const char* __topic;
+int __port;
 
 /* Messages variables */
 unsigned long lastMsgTime = 0;
@@ -22,7 +24,7 @@ char msg[MSG_BUFFER_SIZE];
 float temperatureToSend = -1;
 
 /* Return variables */
-float frequency = -1; // Hz, how many times per second the data is sent
+float frequency = PAUSE_FREQUENCY; // Hz, how many times per second the data is sent
 
 bool setup_wifi() {
     WiFi.disconnect(true); 
@@ -69,13 +71,14 @@ bool connectMQTT() {
 float messageTryCast(char* message) {
     if (message[0] == 'F' && strlen(message) > 1) {
         float number = atof(&message[1]);
-        if (number <= 0) {
-            return -1;
-        } else {
+        if (number == PAUSE_FREQUENCY) {
+            return PAUSE_FREQUENCY;
+        }
+        else if (number > 0) {
             return number;
         }
     }
-    return -1;
+    return 0;
 }
 
 void messageCallback(char* topic, byte* payload, unsigned int length) {
@@ -89,6 +92,10 @@ void messageCallback(char* topic, byte* payload, unsigned int length) {
     if (number > 0) {
         Serial.print("Update frequency (Hz): ");
         Serial.println(number);
+        frequency = number;
+    }
+    else if (number == PAUSE_FREQUENCY) {
+        Serial.println("Transmission paused");
         frequency = number;
     }
 }
@@ -106,12 +113,13 @@ bool CommunicationAgent::setupConnection() {
     return true;
 }
 
-CommunicationAgent::CommunicationAgent(const char* ssid, const char* password, const char* mqtt_server, const char* topic) {
+CommunicationAgent::CommunicationAgent(const char* ssid, const char* password, const char* mqtt_server, const char* topic, int port) {
   
     __ssid = ssid;
     __password = password;
     __mqtt_server = mqtt_server;
     __topic = topic;
+    __port = port;
 
     randomSeed(micros());
 }
@@ -124,7 +132,7 @@ bool sendMessage() {
     unsigned long now = millis();
 
     // Start transmitting only if a frequency has been assigned
-    if (frequency != -1 && (now - lastMsgTime > (1000 / frequency))) {
+    if (frequency != PAUSE_FREQUENCY && (now - lastMsgTime > (1000 / frequency))) {
         lastMsgTime = now;
         snprintf(msg, MSG_BUFFER_SIZE, "T%.2f", temperatureToSend);
         client.publish(__topic, msg);
@@ -146,7 +154,7 @@ bool CommunicationAgent::handleConnectionError() {
             return false;
         }
     }
-    client.setServer(__mqtt_server, 1883);
+    client.setServer(__mqtt_server, __port);
     client.setCallback(messageCallback);
 
     if (!client.connected()) {

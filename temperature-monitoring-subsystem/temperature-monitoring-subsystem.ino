@@ -1,6 +1,7 @@
 #include "ConnectionState.h"
 #include "CommunicationAgent.h"
 #include <esp32-hal.h>
+#include "Configuration.h"
 
 #define TEMP_UPDATE_DELTA 1000
 
@@ -9,10 +10,11 @@
 #define RED_PIN 5
 #define TEMP_PIN 8
 
-const char* ssid = "esp32wifi";
-const char* password = "esp3232esp";
-const char* mqtt_server = "broker.hivemq.com";
-const char* topic = "iot_project_3";
+const char* ssid = SSID;
+const char* password = PASSWORD;
+const char* mqtt_server = MQTT_SERVER;
+const char* topic = TOPIC;
+int port = PORT;
 
 CommunicationAgent* agent;
 ConnectionState::State state;
@@ -50,7 +52,7 @@ float readTemperature() {
 void setup() {
   Serial.begin(115200);
 
-  agent = new CommunicationAgent(ssid, password, mqtt_server, topic);
+  agent = new CommunicationAgent(ssid, password, mqtt_server, topic, port);
 
   state = ConnectionState::UNKNOWN;
 

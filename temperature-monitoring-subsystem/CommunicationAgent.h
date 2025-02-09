@@ -3,7 +3,7 @@
 
 class CommunicationAgent {
 public:
-    CommunicationAgent(const char* ssid, const char* password, const char* mqtt_server, const char* topic);
+    CommunicationAgent(const char* ssid, const char* password, const char* mqtt_server, const char* topic, int port);
 
     bool setupConnection();
 
