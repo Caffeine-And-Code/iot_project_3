@@ -8,6 +8,10 @@ import DialogTitle from '@mui/material/DialogTitle';
 import Slide from '@mui/material/Slide';
 import { TransitionProps } from '@mui/material/transitions';
 import SelectPercentage from './SelectPercentage';
+import tryToEnterInManual from '../hooks/tryToEnterInManual';
+import { useDataContext } from './Layout/DataGetter/DataContext';
+import SetWindowPercentage from '../hooks/SetWindowPercentage';
+import { useSnackbar } from 'notistack';
 
 const Transition = React.forwardRef(function Transition(
     props: TransitionProps & {
@@ -19,18 +23,45 @@ const Transition = React.forwardRef(function Transition(
   });
 
 function DialogButton() {
+  const { enqueueSnackbar } = useSnackbar()
     const [open, setOpen] = React.useState(false);
+    const [percentage, setPercentage] = React.useState(0);
+    const { arduinoMode } = useDataContext();
 
-  const handleClickOpen = () => {
-    setOpen(true);
+    const handlePercentageChange = (value: number) => {
+        setPercentage(value);
+    }
+
+
+  const handleClickOpen = async () => {
+    const res = await tryToEnterInManual({ arduinoMode: arduinoMode.valueOf() });
+    if (res === true) {
+      setOpen(true);
+      enqueueSnackbar('Entered in Manual Mode', { variant: 'success' });
+    } else {
+      console.error(res);
+      enqueueSnackbar('Failed to enter in Manual Mode: '+res, { variant: 'error' }); 
+    }
   };
 
   const handleClose = () => {
     setOpen(false);
   };
+
+  const handleSave = async () => {
+    const res = await SetWindowPercentage({ percentage });
+    if (res === true) {
+      setOpen(false);
+      enqueueSnackbar('Window position updated', { variant: 'success' });
+    } else {
+      console.error(res);
+      enqueueSnackbar('Failed to update window position: '+res, { variant: 'error' });
+    }
+  }
+
   return <>
     <Button 
-        variant="contained" onClick={handleClickOpen}>
+        variant="contained" onClick={()=>handleClickOpen()} loading={arduinoMode == -1}>
         Manual Controls
       </Button>
       <Dialog
@@ -47,11 +78,11 @@ function DialogButton() {
             Adjust the window opening percentage by dragging the slider below.
             To confirm the new setting, click on "Save" on the bottom right.
           </DialogContentText>
-          <SelectPercentage />
+          <SelectPercentage percentage={percentage} setPosition={handlePercentageChange} />
         </DialogContent>
         <DialogActions>
           <Button variant='outlined' onClick={handleClose}>Dismiss</Button>
-          <Button variant='contained' onClick={handleClose}>Save</Button>
+          <Button variant='contained' onClick={handleSave}>Save</Button>
         </DialogActions>
       </Dialog>
   </>

@@ -20,6 +20,7 @@ import { useDataContext } from "./Layout/DataGetter/DataContext";
 import AdjustIcon from "@mui/icons-material/Adjust";
 import setSystemStatus from "../hooks/setSystemStatus";
 import SkeletonListItem from "./Layout/SkeletonListItem";
+import { useSnackbar } from "notistack";
 
 interface TempVisualizerProps {
   temperatures: { temperature: number; letture: number }[];
@@ -30,6 +31,7 @@ function TempVisualizer({ temperatures, isCard = false }: TempVisualizerProps) {
   const isMobile = useIsMobile();
   const { systemStatus } = useDataContext();
   const [isLoading, setIsLoading] = React.useState(false);
+  const { enqueueSnackbar } = useSnackbar();
   
   const formatData = (data: { temperature: number; letture: number }[]) => {
     const temp = data.map((el) => parseFloat(el.temperature.toFixed(2)));
@@ -63,8 +65,14 @@ function TempVisualizer({ temperatures, isCard = false }: TempVisualizerProps) {
   
   const handleRequest = async () => {
     setIsLoading(true);
-    await setSystemStatus();
+    const res = await setSystemStatus();
+    if(res === true){
+      enqueueSnackbar("System status changed back to Normal", { variant: "success" });
+    } else {
+      enqueueSnackbar("Failed to change system status: " + res, { variant: "error" });
+    }
     setIsLoading(false);
+    
   };
 
   React.useEffect(() => {
