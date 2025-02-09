@@ -12,7 +12,7 @@ export default async function tryToEnterInManual({arduinoMode}:{arduinoMode:Mode
             }
 
             // send the command to the server
-            fetch("/api/manual", {
+            fetch("/manual", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",

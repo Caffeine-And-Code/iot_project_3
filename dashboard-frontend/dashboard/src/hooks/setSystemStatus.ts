@@ -18,7 +18,7 @@ export default async function setSystemStatus(): Promise<boolean | string> {
     }
 
     // send the command to the server
-    fetch("/api/systemStatus", {
+    fetch("/resolve_alarm", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
