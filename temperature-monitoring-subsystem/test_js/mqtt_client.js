@@ -25,13 +25,17 @@ function connect() {
 
     client.on('message', (topic, message) => {
         console.log(`Messaggio ricevuto: ${message.toString()}`);
-        displayMessage(message.toString());
+        tryReturn(useMessage(message.toString()));
     });
 
     client.on('close', () => {
         console.warn("Connessione chiusa. Riconnessione in corso...");
         connect();
     });
+}
+
+function tryReturn(value) {
+    console.log("You returned " + value);
 }
 
 /* Funzione per inviare la frequenza */
@@ -59,15 +63,16 @@ function sendMessage() {
     messageInput.value = '';
 }
 
-/* esempio di funzione per l'handle della risposta */
-function displayMessage(message) {
+function useMessage(message){
     const temp = parseFloat(message.slice(1));
     if (message.startsWith('T') && !isNaN(temp)) {
         const messageList = document.getElementById('messageList');
         const listItem = document.createElement('li');
         listItem.textContent = temp;
         messageList.appendChild(listItem);
+        return temp;
     } else {
         console.warn("Messaggio ignorato: non inizia con 'T' seguito da un float");
+        return NaN;
     }
 }
