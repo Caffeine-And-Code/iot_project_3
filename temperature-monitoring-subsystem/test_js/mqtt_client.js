@@ -3,22 +3,24 @@ const MQTT_TOPIC = 'iot_project_3';
 
 let client;
 
-document.addEventListener('DOMContentLoaded', function() {
-    console.log("Inizializzazione client MQTT...");
-
+/* funzione per la connessione */
+function connect() {
     client = mqtt.connect(MQTT_BROKER);
+    console.log("Inizializzazione client MQTT...");
 
     client.on('connect', () => {
         console.log('Connesso al broker MQTT');
         client.subscribe(MQTT_TOPIC, (err) => {
             if (err) {
                 console.error("Errore nella sottoscrizione al topic:", err);
+                connect();
             }
         });
     });
 
     client.on('error', (error) => {
         console.error("Errore di connessione MQTT:", error);
+        connect();
     });
 
     client.on('message', (topic, message) => {
@@ -28,29 +30,44 @@ document.addEventListener('DOMContentLoaded', function() {
 
     client.on('close', () => {
         console.warn("Connessione chiusa. Riconnessione in corso...");
+        connect();
     });
-});
+}
 
-function sendMessage() {
-    const messageInput = document.getElementById('messageInput');
-    const message = messageInput.value.trim();
-
-    if (!isNaN(message) && parseFloat(message) == message) {
-        const floatMessage = `F${message}`;
+/* Funzione per inviare la frequenza */
+function sendFloatMessage(value) {
+    if (typeof value === 'number' && !isNaN(value) && parseFloat(value) == value) {
+        const floatMessage = `F${value}`;
         if (client && client.connected) {
             client.publish(MQTT_TOPIC, floatMessage);
-            messageInput.value = '';
+            console.log(`Messaggio inviato: ${floatMessage}`);
         } else {
             console.error("Errore: MQTT client non connesso!");
+            connect();
         }
     } else {
         console.error("Errore: Inserire un valore float valido!");
     }
 }
 
+function sendMessage() {
+    const messageInput = document.getElementById('messageInput');
+    const message = messageInput.value.trim();
+
+    sendFloatMessage(parseFloat(message));
+    
+    messageInput.value = '';
+}
+
+/* esempio di funzione per l'handle della risposta */
 function displayMessage(message) {
-    const messageList = document.getElementById('messageList');
-    const listItem = document.createElement('li');
-    listItem.textContent = message;
-    messageList.appendChild(listItem);
+    const temp = parseFloat(message.slice(1));
+    if (message.startsWith('T') && !isNaN(temp)) {
+        const messageList = document.getElementById('messageList');
+        const listItem = document.createElement('li');
+        listItem.textContent = temp;
+        messageList.appendChild(listItem);
+    } else {
+        console.warn("Messaggio ignorato: non inizia con 'T' seguito da un float");
+    }
 }
