@@ -1,0 +1,16 @@
+### POST request to pass in manual mode
+POST http://localhost:3000/control/manual
+
+### POST request to pass in automatic mode
+POST http://localhost:3000/control/automatic
+
+### POST request to pass the percentage
+POST http://localhost:3000/control/percentage
+Content-Type: application/json
+
+{
+    "percentage":74
+}
+
+### GET request for check if data are setted correctly
+GET http://localhost:3000/control/data
