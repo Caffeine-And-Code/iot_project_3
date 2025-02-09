@@ -1,13 +1,13 @@
 import React from "react";
 import useIsMobile from "../hooks/isMobile";
 import { Avatar, List, ListItem, ListItemAvatar, ListItemText, Stack, Typography } from "@mui/material";
-import { getSystemStatus, SystemStatus } from "../hooks/getSystemStatus";
+import { SystemStatus } from "../hooks/getSystemStatus";
 import KeyboardDoubleArrowUpIcon from '@mui/icons-material/KeyboardDoubleArrowUp';
 import KeyboardDoubleArrowDownIcon from '@mui/icons-material/KeyboardDoubleArrowDown';
 import ThermostatIcon from '@mui/icons-material/Thermostat';
 import CalculateIcon from '@mui/icons-material/Calculate';
 import SystemSecurityUpdateWarningIcon from '@mui/icons-material/SystemSecurityUpdateWarning';
-import requestInterval from "../config/systemVariables";
+import { useDataContext } from "./Layout/DataGetter/DataContext";
 
 interface TempVisualizerProps {
   temperatures: { temperature: number; letture: number }[];
@@ -16,15 +16,7 @@ interface TempVisualizerProps {
 
 function TempVisualizer({ temperatures,isCard=false }: TempVisualizerProps) {
   const isMobile = useIsMobile();
-  const [status, setStatus] = React.useState<SystemStatus | null>(getSystemStatus());
-
-  React.useEffect(() => {
-    const interval = setInterval(() => {
-      setStatus(getSystemStatus());
-    }, requestInterval);
-
-    return () => clearInterval(interval);
-  }, []);
+  const {systemStatus} = useDataContext();
 
   const formatData = (data: { temperature: number; letture: number }[]) => {
     const temp = data.map((el) => parseFloat(el.temperature.toFixed(2)));
@@ -74,7 +66,7 @@ function TempVisualizer({ temperatures,isCard=false }: TempVisualizerProps) {
             <SystemSecurityUpdateWarningIcon />
           </Avatar>
         </ListItemAvatar>
-        <ListItemText primary={statusFormatter(status!)} secondary="System Current Status" />
+        <ListItemText primary={statusFormatter(systemStatus)} secondary="System Current Status" />
       </ListItem>
       <ListItem>
         <ListItemAvatar>
