@@ -2,9 +2,8 @@ import { Slider, Stack } from '@mui/material'
 import React from 'react'
 import WindowVisualizer from './WindowVisualizer';
 
-function SelectPercentage() {
-    const [position, setPosition] = React.useState<number>(0);
-
+function SelectPercentage({percentage,setPosition}: {percentage: number,setPosition: (value: number) => void}) {
+    
     const marks = [
         {
           value: 0,
@@ -21,11 +20,11 @@ function SelectPercentage() {
       ];
   return (
     <Stack spacing={4} direction="column" alignItems="center" sx={{ marginTop: '20px' }}>
-     <WindowVisualizer percentage={position}/>
+     <WindowVisualizer percentage={percentage}/>
      <Slider
           aria-label="time-indicator"
           size="small"
-          value={position}
+          value={percentage}
           valueLabelDisplay="auto"
           getAriaValueText={(value) => `${value}%`}
           min={0}

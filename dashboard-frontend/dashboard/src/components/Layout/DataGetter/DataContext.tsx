@@ -4,12 +4,15 @@ import { getSystemStatus, SystemStatus } from "../../../hooks/getSystemStatus";
 import getTemperatures from "../../../hooks/getTemperatures";
 import getWindowPercentage from "../../../hooks/getWindowPercentage";
 import debug from "../../../config/systemVariables";
+import { getArduinoMode, getSystemMode, Modes } from "../../../hooks/getModes";
 
 // il tipo dei dati condivisi
 interface DataContextType {
     temperature: { letture: number; temperature: number }[];
     systemStatus: SystemStatus;
     windowPercentage: number;
+    arduinoMode: Modes;
+    frontMode: Modes;
 }
 
 // Creiamo il contesto
@@ -28,6 +31,8 @@ export const DataProvider = ({ children }: { children: React.ReactNode }) => {
     const [temperature, setTemperature] = useState<{ letture: number; temperature: number }[]>([]);
     const [systemStatus, setSystemStatus] = useState<SystemStatus>(SystemStatus.Normal);
     const [windowPercentage, setWindowPercentage] = useState<number>(-1);
+    const [arduinoMode, setArduinoMode] = useState<Modes>(-1);
+    const [frontMode, setFrontMode] = useState<Modes>(-1);
 
     useEffect(() => {
         const socket = io();
@@ -39,6 +44,8 @@ export const DataProvider = ({ children }: { children: React.ReactNode }) => {
             setTemperature(getTemperatures(msg));
             setSystemStatus(getSystemStatus(msg));
             setWindowPercentage(getWindowPercentage(msg));
+            setArduinoMode(getArduinoMode(msg));
+            setFrontMode(getSystemMode(msg));
         });
 
         if(debug){
@@ -49,6 +56,8 @@ export const DataProvider = ({ children }: { children: React.ReactNode }) => {
                 setTemperature(getTemperatures(msg));
                 setSystemStatus(getSystemStatus(msg));
                 setWindowPercentage(getWindowPercentage(msg));
+                setArduinoMode(getArduinoMode(msg));
+                setFrontMode(getSystemMode(msg));
             }, 5000);
         }
 
@@ -58,7 +67,7 @@ export const DataProvider = ({ children }: { children: React.ReactNode }) => {
     }, []);
 
     return (
-        <DataContext.Provider value={{ temperature, systemStatus, windowPercentage }}>
+        <DataContext.Provider value={{ temperature, systemStatus, windowPercentage, arduinoMode, frontMode }}>
             {children}
         </DataContext.Provider>
     );

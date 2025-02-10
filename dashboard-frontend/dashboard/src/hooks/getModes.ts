@@ -1,6 +1,7 @@
 import debug from "../config/systemVariables";
 
 export enum Modes{
+    Undefined = -1,
     Automatic = 1,
     Manual = 2
 }
