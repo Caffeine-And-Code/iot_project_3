@@ -8,6 +8,8 @@ import {
 import { Gauge, gaugeClasses } from "@mui/x-charts";
 import React from "react";
 import { useThemeContext } from "./Layout/ThemeProvider";
+import DialogButton from "./DialogButton";
+import SkeletonWindowGraph from "./Layout/SkeletonWindowGraph";
 
 interface WindowVisualizerProps {
   percentage: number;
@@ -21,7 +23,7 @@ function WindowVisualizer({ percentage,isCard }: WindowVisualizerProps) {
   const [percentagePopover, setPercentagePopover] =
     React.useState<HTMLElement | null>(null);
 
-    const { isDarkMode, toggleTheme } = useThemeContext();
+    const { isDarkMode } = useThemeContext();
 
   const handleAngle = (event: React.MouseEvent<HTMLElement>) => {
     setAnglePopover(event.currentTarget);
@@ -48,8 +50,12 @@ function WindowVisualizer({ percentage,isCard }: WindowVisualizerProps) {
 
   return (
     <>
-      <Paper elevation={isCard?0:3} sx={{ padding: 4, width: "100%",backgroundColor:isDarkMode&&isCard&&"#1E1E1E !important" }}>
-        <Stack
+      <Paper elevation={isCard ? 0 : 3} sx={{ padding: 4, width: "100%", ...(isDarkMode && isCard && { backgroundColor: "#1E1E1E !important" }) }}>
+        {
+          percentage < 0 ? (
+            <SkeletonWindowGraph />
+          ) : (
+            <Stack
           direction="row"
           id="window-visualizer"
           display={"flex"}
@@ -124,7 +130,10 @@ function WindowVisualizer({ percentage,isCard }: WindowVisualizerProps) {
             />
           </Box>
         </Stack>
+          )
+        }
       </Paper>
+      {isCard&&<Box margin={2}><DialogButton /></Box>}
       <Popover
         id="mouse-over-popover"
         sx={{ pointerEvents: "none" }}

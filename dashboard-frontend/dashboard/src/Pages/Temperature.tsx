@@ -5,19 +5,12 @@ import Helmet from "../components/Layout/Helmet";
 import React from "react";
 import { Divider } from "@mui/material";
 import useIsMobile from "../hooks/isMobile";
-import getTemperatures from "../hooks/getTemperatures";
-import requestInterval from "../config/systemVariables";
+import { useDataContext } from "../components/Layout/DataGetter/DataContext";
 
 function Temperature() {
-  const [temperatures, setTemp] = React.useState(getTemperatures() ?? []);
-  //handle the get temperatures from the backend
-  React.useEffect(() => {
-    const interval = setInterval(() => {
-      setTemp(getTemperatures());
-    }, requestInterval);
+  const { temperature } = useDataContext();
 
-    return () => clearInterval(interval);
-  }, []);
+
   const containerRef = React.useRef(null);
   const isMobile = useIsMobile();
 
@@ -35,7 +28,7 @@ function Temperature() {
           sx={{ height: "100%", maxHeight: "400px" }}
           ref={containerRef}
         >
-          <TempChart containerRef={containerRef} temperatures={temperatures} />
+          <TempChart containerRef={containerRef} temperatures={temperature} />
         </Grid>
         {isMobile ? (
           <Grid size={{ xs: 10, sm: 1 }}>
@@ -57,11 +50,11 @@ function Temperature() {
         {
           isMobile ? (
             <Grid size={{ xs: 10, sm: 3 }}>
-              <TempVisualizer temperatures={temperatures} isCard={false}/>
+              <TempVisualizer temperatures={temperature} isCard={false}/>
             </Grid>
           )
           : <Grid size={{ xs: 10, sm: 4 }} sx={{ height: "100%" }}>
-          <TempVisualizer temperatures={temperatures} isCard={false} />
+          <TempVisualizer temperatures={temperature} isCard={false} />
         </Grid>
         }
       </Grid>

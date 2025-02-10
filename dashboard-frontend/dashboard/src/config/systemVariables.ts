@@ -1,5 +1,3 @@
-const requestInterval = 5000; // time in milliseconds to request new data 
+const debug = true; // debug mode
 
-
-
-export default requestInterval;
+export default debug;
