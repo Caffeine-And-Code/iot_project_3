@@ -20,11 +20,11 @@ void AppController::setup()
     stateMachineTask = new StateMachineTask(this);
     stateMachineTask->init(200);
     serialTask = new SerialTask(this);
-    serialTask->init(1000);
+    serialTask->init(100);
 
     this->stateMachineTask->changeState(Automatic);
 
-    this->scheduler->init(200);
+    this->scheduler->init(100);
     this->scheduler->addTask(serialTask);
     this->scheduler->addTask(stateMachineTask);
 }

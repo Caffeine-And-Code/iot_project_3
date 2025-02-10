@@ -22,7 +22,7 @@ const sendMessage = (port, message) =>
     {   
         console.log(message);
         
-        port.write(message, function (err)
+        port.write(message+"\n", function (err)
         {            
             if (err){
                 reject(err);

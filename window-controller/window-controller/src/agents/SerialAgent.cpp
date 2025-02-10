@@ -5,7 +5,7 @@ void SerialAgent::updateState(AppController *controller)
 {
     if (Serial.available() > 0)
     {
-        String receivedData = Serial.readString();
+        String receivedData = Serial.readStringUntil('\n');
         receivedData.trim();
         if (receivedData.startsWith("T"))
         {

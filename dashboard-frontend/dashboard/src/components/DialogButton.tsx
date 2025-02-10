@@ -35,13 +35,20 @@ function DialogButton() {
 
 
   const handleClickOpen = async () => {
-    const res = await tryToEnterInManual({ arduinoMode: arduinoMode.valueOf() });
-    if (res === true) {
+    if (frontMode == 2)
+    {
       setOpen(true);
-      enqueueSnackbar('Entered in Manual Mode', { variant: 'success' });
+      enqueueSnackbar("Already in Manual Mode, entered the controls...", {variant: "success"});
+      return;
+    }
+
+    const res = await tryToEnterInManual({arduinoMode: arduinoMode.valueOf()});
+    if (res === true) {
+        setOpen(true);
+        enqueueSnackbar("Entered in Manual Mode", {variant: "success"});
     } else {
-      console.error(res);
-      enqueueSnackbar('Failed to enter in Manual Mode: '+res, { variant: 'error' }); 
+        console.error(res);
+        enqueueSnackbar("Failed to enter in Manual Mode: " + res, {variant: "error"});
     }
   };
 

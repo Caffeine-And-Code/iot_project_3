@@ -6,6 +6,7 @@ void SerialTask::tick()
 {
     auto appController = static_cast<AppController *>(this->controller);
     appController->serial->updateState(appController);
+    // appController->userLCD->printCentered(String(appController->temperature), 0);
 }
 
 void SerialTask::reset()

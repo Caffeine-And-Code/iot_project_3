@@ -3,8 +3,8 @@ const { modes, states } = require("../enums")
 const {send} = require("../socket");
 const { sendMQTT } = require("./espService");
 
-const T1 = 5
-const T2 = 10
+const T1 = 14.5
+const T2 = 16
 
 const F1 = 20
 const F2 = 30
@@ -79,17 +79,19 @@ const getWindowOpenPercentage = (t) => {
 const getWindowState = (t) => {
     if (t < T1)
     {
-        sendMQTT(1/3)
+        lastTooHotTimeStamp = undefined
+        sendMQTT(1/5)
         return states.normal
     }
     if (t >= T1 && t <= T2)
     {
-        sendMQTT(1/2)
+        lastTooHotTimeStamp = undefined
+        sendMQTT(1/4)
         return states.hot
     }
     if (t > T2)
     {
-        sendMQTT(1/2)
+        sendMQTT(1/4)
         const ts = Date.now()
         if(lastTooHotTimeStamp === undefined){
             lastTooHotTimeStamp = ts
@@ -125,14 +127,18 @@ const getLastTemperature = () =>
 
 const processTemperature = async (t) =>
 {
-    if (currentState !== states.alarm)
+    if (currentMode === modes.automatic && arduinoMode == modes.automatic)
     {
-        if (currentMode === modes.automatic && arduinoMode == modes.automatic)
+        if (currentState !== states.alarm)
         {
             currentOpenPercentage = getWindowOpenPercentage(t)
             currentState = getWindowState(t)   
             await sendOpenPercentage(currentOpenPercentage)
         }
+        else
+        {
+            await sendOpenPercentage(100)
+        }   
     }
     saveTemperature(t)
     sendData()
@@ -161,7 +167,7 @@ const editPercentage = async (percentage) =>
 const resolveAlarm = async () =>
 {
     currentState = states.too_hot
-    lastTooHotTimeStamp = Date.now()
+    lastTooHotTimeStamp = undefined
     sendData()
 }
 
