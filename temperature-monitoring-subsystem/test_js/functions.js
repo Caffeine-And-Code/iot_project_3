@@ -3,7 +3,7 @@ const MQTT_TOPIC = 'iot_project_3';
 
 let client;
 
-/* Function to connect and set the callback function */
+/* Function to connect and set the callback function (the callback function must accept a string) */
 function connectMQTT(callback) {
     client = mqtt.connect(MQTT_BROKER);
     console.log("Initializing MQTT client...");
@@ -46,30 +46,4 @@ function sendMQTT(value) {
     } else {
         console.error("Error: Please enter a valid float value!");
     }
-}
-
-/////////////////////////////////////////////////////////////////////////
-
-function sendMessage() {
-    const messageInput = document.getElementById('messageInput');
-    const message = messageInput.value.trim();
-    const value = parseFloat(message);
-
-    sendMQTT(value);
-    
-    messageInput.value = '';
-}
-
-function useMessage(message){
-    const temp = parseFloat(message.slice(1));
-    if (message.startsWith('T') && !isNaN(temp)) {
-        const messageList = document.getElementById('temperature');
-        messageList.textContent = temp;
-    } else {
-        console.warn("Messaggio ignorato: non inizia con 'T' seguito da un float");
-    }
-}
-
-function connect() {
-    connectMQTT(useMessage);
 }
