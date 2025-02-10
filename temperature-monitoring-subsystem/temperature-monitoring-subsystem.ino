@@ -2,24 +2,15 @@
 #include "CommunicationAgent.h"
 #include <esp32-hal.h>
 #include "Configuration.h"
+#include "Led.h"
+#include "Thermo.h"
 
-#define TEMP_UPDATE_DELTA 1000
-
-/* Configuration variables */
-#define GREEN_PIN 4
-#define RED_PIN 5
-#define TEMP_PIN 8
-
-const char* ssid = SSID;
-const char* password = PASSWORD;
-const char* mqtt_server = MQTT_SERVER;
-const char* topic = TOPIC;
-int port = PORT;
+Led* green;
+Led* red;
+Thermo* thermo;
 
 CommunicationAgent* agent;
 ConnectionState::State state;
-
-unsigned long lastRegistration;
 
 // void getFreeMemory() {
 //   Serial.print("Free memory (bytes): ");
@@ -32,33 +23,28 @@ void switchState(ConnectionState::State newState) {
     switch (state)
     {
     case ConnectionState::CONNECTION_OK:
-      digitalWrite(GREEN_PIN, HIGH);
-      digitalWrite(RED_PIN, LOW);
+      green->on();
+      red->off();
       break;
     
     default:
-      digitalWrite(RED_PIN, HIGH);
-      digitalWrite(GREEN_PIN, LOW);
+      green->off();
+      red->on();
       break;
     }
   }
 }
 
-float readTemperature() {
-  int sensorValue = analogRead(TEMP_PIN);
-  return (sensorValue * (3.3 / 4095.0)) * 100.0;
-}
-
 void setup() {
   Serial.begin(115200);
 
-  agent = new CommunicationAgent(ssid, password, mqtt_server, topic, port);
+  agent = new CommunicationAgent(SSID, PASSWORD, MQTT_SERVER, TOPIC, PORT);
 
   state = ConnectionState::UNKNOWN;
 
-  pinMode(GREEN_PIN, OUTPUT);
-  pinMode(RED_PIN, OUTPUT);
-  pinMode(TEMP_PIN, INPUT);
+  green = new Led(GREEN_PIN);
+  red = new Led(RED_PIN);
+  thermo = new Thermo(TEMP_PIN);
 
   if (agent->setupConnection()) {
     switchState(ConnectionState::CONNECTION_OK);
@@ -66,8 +52,6 @@ void setup() {
   else {
     switchState(ConnectionState::CONNECTION_ERROR);
   }
-
-  lastRegistration = millis();
 }
 
 void loop() {
@@ -77,9 +61,7 @@ void loop() {
       switchState(ConnectionState::CONNECTION_ERROR);
     }
 
-    if (millis() - lastRegistration >= TEMP_UPDATE_DELTA) {
-      agent->sendTemperature(readTemperature());
-    }
+    agent->sendTemperature(thermo->readTemperature());
 
   }
   else {
