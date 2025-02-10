@@ -8,7 +8,7 @@ export default function getWindowPercentage(msg: string) {
     }
 
     const data = JSON.parse(msg);
-    if (data["percentage"]) {
+    if ("percentage" in data) {
         return data["percentage"];
     }
 }

@@ -13,7 +13,7 @@ const DT = 5000
 const PERC_MAX = 100
 const PERC_MIN = 0.01
 
-const SKIP_ARDUINO = true
+const SKIP_ARDUINO = false
 
 
 
@@ -23,18 +23,33 @@ let currentState = states.normal
 let arduinoMode = modes.automatic
 let currentOpenPercentage = 0
 let lastTooHotTimeStamp = undefined
+let busy = false;
 
 const begin =async (port) =>
 {
     await initialize(port)
-    askCommunication((mode) => {
-        arduinoMode = mode
-        sendData()
+    askCommunication((mode) =>
+    {
+        while (busy) { }
+        busy = true
+        console.log("new mode", mode);
+        if (arduinoMode != mode)
+        {
+            arduinoMode = mode
+            sendData()   
+        }
+        busy = false
     }, (percentage) =>
     {
-        currentOpenPercentage = percentage
-        sendData()
-
+        while (busy) { }
+        busy = true
+        console.log("new percentage", percentage);
+        if (percentage != currentOpenPercentage)
+        {
+            currentOpenPercentage = percentage
+            sendData()    
+        }      
+        busy = false
     })
 }
 
@@ -103,8 +118,8 @@ const processTemperature = (t) =>
         if (currentMode === modes.automatic)
         {
             currentOpenPercentage = getWindowOpenPercentage(t)
+            currentState = getWindowState(t)   
         }
-        currentState = getWindowState(t)   
     }
     saveTemperature(t)
     sendData()
@@ -121,12 +136,13 @@ const passToAutomaticMode = async () => {
     sendData()
 }
 
-const editPercentage = async (percentage) => {
+const editPercentage = async (percentage) =>
+{
     if(getCurrentMode() !== modes.manual) throw new Error("Can't edit percentage in automatic mode")
     if (percentage < 0 || percentage > 100) throw new Error("Invalid percentage value")
     currentOpenPercentage = percentage
-    sendData()
-    !SKIP_ARDUINO && await sendOpenPercentage(percentage)
+    sendData()    
+    await sendOpenPercentage(percentage)
 }
 
 const resolveAlarm = async () =>

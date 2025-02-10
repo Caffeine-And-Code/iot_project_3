@@ -18,10 +18,11 @@ export default async function setSystemStatus(): Promise<boolean | string> {
     }
 
     // send the command to the server
-    fetch("/resolve_alarm", {
+    fetch("http://localhost:3000/control/resolve_alarm", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
+          
       },
       body: JSON.stringify({ status: toSend }),
     })

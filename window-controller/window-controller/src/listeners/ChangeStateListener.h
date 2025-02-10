@@ -19,10 +19,12 @@ public:
         if (changeStateEvent->getNewState() == Automatic)
         {
             appController->serial->changeMode(Automatic);
+            appController->userLCD->printAutomaticInfo(appController->openPercentage);
         }
         else
         {
             appController->serial->changeMode(Manual);
+            appController->userLCD->printManualInfo(appController->openPercentage, appController->temperature);
         }
     }
 };

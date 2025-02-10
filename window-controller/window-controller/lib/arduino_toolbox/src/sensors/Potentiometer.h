@@ -17,7 +17,9 @@ public:
 
     static int toPercentage(int value)
     {
-        return (int)round(value * 100 / 1024);
+        float a = ((float)value) / 1020.0;
+        int b = a * 100;
+        return b;
     }
 };
 

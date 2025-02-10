@@ -7,23 +7,24 @@ AppController controller;
 
 void AppController::setup()
 {
-    this->enableVerbose();
+    this->disableVerbose();
 
     switchButton = new Button(BUTTON_PIN);
     serial = new SerialAgent();
     potentiometer = new Potentiometer(POT_PIN);
     userLCD = new UserLCD();
+    window = new Window(WINDOW_PIN);
 
     this->eventScheduler->addSchedule(ChangeStateEvent::EventID, new ChangeStateListener());
 
     stateMachineTask = new StateMachineTask(this);
-    stateMachineTask->init(100);
+    stateMachineTask->init(200);
     serialTask = new SerialTask(this);
-    serialTask->init(100);
+    serialTask->init(1000);
 
     this->stateMachineTask->changeState(Automatic);
 
-    this->scheduler->init(100);
+    this->scheduler->init(200);
     this->scheduler->addTask(serialTask);
     this->scheduler->addTask(stateMachineTask);
 }
@@ -38,8 +39,4 @@ void AppController::loop()
     {
         this->scheduler->schedule();
     }
-
-    controller.println("Temperature: " + String(temperature));
-    controller.println("Open Percentage: " + String(openPercentage));
-    delay(2000);
 }

@@ -11,7 +11,7 @@ export default async function SetWindowPercentage({percentage}:{percentage:numbe
         }
 
         // send the command to the server
-        fetch("/percentage", {
+        fetch("http://localhost:3000/control/percentage", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -48,7 +48,7 @@ async function tryToEnterInAutomatic() : Promise<boolean|string> {
             }
 
             // send the command to the server
-            fetch("/automatic", {
+            fetch("http://localhost:3000/control/automatic", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",

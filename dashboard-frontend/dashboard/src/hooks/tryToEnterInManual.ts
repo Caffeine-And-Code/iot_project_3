@@ -12,7 +12,7 @@ export default async function tryToEnterInManual({arduinoMode}:{arduinoMode:Mode
             }
 
             // send the command to the server
-            fetch("/manual", {
+            fetch("http://localhost:3000/control/manual", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -23,13 +23,17 @@ export default async function tryToEnterInManual({arduinoMode}:{arduinoMode:Mode
                     if (res.ok) {
                         resolve(true);
                     } else {
-                        reject(res.statusText);
+                        resolve(res.statusText);
                     }
                 })
                 .catch((err) => {
                     console.error(err);
-                    reject(err);
+                    resolve(err);
                 });
+        } else
+        {
+            resolve("Arduino is in Manual Mode")
         }
+        
     });
 }
