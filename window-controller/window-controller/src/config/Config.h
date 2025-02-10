@@ -4,7 +4,7 @@
 
 #define BUTTON_PIN 3
 #define WINDOW_PIN 6
-#define POT_PIN A3
+#define POT_PIN A0
 
 #define BAUDRATE 9600
 

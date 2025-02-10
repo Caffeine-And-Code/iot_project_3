@@ -43,6 +43,7 @@ router.post('/percentage', async function(req, res, next) {
   {
     await editPercentage(req.body.percentage)
     Response.setData(getData())
+    
   }catch (ex){
     Response.setError(ex.message)
   }

@@ -16,17 +16,19 @@ const initialize = async (port) => {
 
 const sendOpenPercentage = async (percentage) => {
     ensureArduino()
-    await sendMessage(arduino, `${SEND_PERCENTAGE_PREFIX}:${percentage}`)
+    await sendMessage(arduino, `${SEND_PERCENTAGE_PREFIX}${percentage}`)
 }
 
 const sendTemperature = async (temperature) => {
     ensureArduino()
-    await sendMessage(arduino, `${SEND_TEMPERATURE_PREFIX}:${temperature}`)
+    await sendMessage(arduino, `${SEND_TEMPERATURE_PREFIX}${temperature}`)
 }
 
 const askCommunication = (onChangeMode, onUpdateOpenPercentage) => {
     listen(arduino, (data) =>
     {
+        console.log(data);
+        
         /**
          * @type {string} message
         */

@@ -14,7 +14,7 @@ export default function getTemperatures(msg: string) : { letture: number; temper
   }
 
     const data = JSON.parse(msg);
-    if(data["temperatureHistory"]){
+    if("temperatureHistory" in data){
         const temperatures = data["temperatureHistory"];
         return temperatures.map((temperature:number, index:number) => ({
             letture: index,

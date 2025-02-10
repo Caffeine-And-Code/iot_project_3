@@ -15,8 +15,10 @@ function getSystemStatus(msg:string): SystemStatus {
     }
 
     const data = JSON.parse(msg);
-    if(data["applicationState"] && SystemStatus[data["applicationState"]]){
-        const val = SystemStatus[data["applicationState"]];
+    console.log(data);
+    
+    if("applicationState" in data){
+        const val = data["applicationState"];
         return SystemStatus[val as keyof typeof SystemStatus];
     }
 

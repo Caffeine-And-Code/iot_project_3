@@ -15,19 +15,19 @@ public:
     }
     void run() override
     {
+        if (controller->switchButton->isPressed())
+        {
+            controller->stateMachineTask->changeState(Manual);
+            return;
+        }
         auto openPercentage = controller->openPercentage;
         if (openPercentage != lastPercentage)
         {
-            controller->println("new Percentage: " + String(openPercentage));
             controller->window->open(openPercentage);
             controller->userLCD->printAutomaticInfo(openPercentage);
             lastPercentage = openPercentage;
         }
-
-        if (controller->switchButton->isPressed())
-        {
-            controller->stateMachineTask->changeState(Manual);
-        }
+        controller->window->open(openPercentage);
     }
 };
 

@@ -11,7 +11,7 @@ public:
 
     void open(int percentage)
     {
-        char degree = (percentage * (WINDOW_OPEN - WINDOW_CLOSE) / 100) + WINDOW_CLOSE;
+        short degree = (percentage * (WINDOW_OPEN - WINDOW_CLOSE) / 100) + WINDOW_CLOSE;
         this->move(degree);
     }
 };

@@ -4,10 +4,13 @@ var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 var indexRouter = require('./routes/index');
 var controlsRouter = require('./routes/control');
+var cors = require('cors')
 
 async function getApp()
 {
     var app = express();
+
+    app.use(cors())
 
     app.use(logger('dev'));
     app.use(express.json());

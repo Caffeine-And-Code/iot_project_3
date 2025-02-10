@@ -23,21 +23,26 @@ public:
         }
         auto temperature = controller->temperature;
         bool temperatureChange = lastTemperature != temperature;
-        // auto openPercentage = controller->openPercentage;
         bool openPercentageChange = false;
 
         if (controller->potentiometer->hasChanged())
         {
-            controller->openPercentage = Potentiometer::toPercentage(controller->potentiometer->getValue());
-            controller->window->open(controller->openPercentage);
-            controller->serial->updatePercentage(controller->openPercentage);
-            openPercentageChange = true;
+            controller->println(String(controller->potentiometer->getValue()));
+            auto percentage = Potentiometer::toPercentage(controller->potentiometer->getValue());
+            if (percentage != controller->openPercentage)
+            {
+                controller->openPercentage = percentage;
+                controller->window->open(controller->openPercentage);
+                controller->serial->updatePercentage(controller->openPercentage);
+                openPercentageChange = true;
+            }
         }
 
         if (openPercentageChange || temperatureChange)
         {
             controller->userLCD->printManualInfo(controller->openPercentage, temperature);
         }
+        controller->window->open(controller->openPercentage);
     }
 };
 

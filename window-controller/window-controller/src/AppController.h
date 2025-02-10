@@ -34,8 +34,8 @@ public:
     SerialTask *serialTask;
     UserLCD *userLCD;
 
-    int temperature;
-    int openPercentage;
+    int temperature = 0;
+    int openPercentage = 0;
 
     void
     setup() override;

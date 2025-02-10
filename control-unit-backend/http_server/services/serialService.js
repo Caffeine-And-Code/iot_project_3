@@ -1,7 +1,7 @@
 const {SerialPort} = require('serialport');
 
 // Du a serial port library bug reported in some issue on GitHub sometimes is necessary wait some second for writing something, and this value seems to be good enough
-const CONN_OPEN_TYPE = 1700
+const CONN_OPEN_TYPE = 3000
 
 const getPort = (path, baudRate) => {
     return new Promise((resolve, reject) => {
@@ -16,14 +16,20 @@ const getPort = (path, baudRate) => {
     })
 }
 
-const sendMessage = (port, message) => {
-    return new Promise((resolve, reject) => {
-        port.write(message, function(err) {
+const sendMessage = (port, message) =>
+{
+    return new Promise((resolve, reject) =>
+    {   
+        console.log(message);
+        
+        port.write(message, function (err)
+        {            
             if (err){
                 reject(err);
             }
             resolve();
         })
+        resolve()
     })
 }
 
@@ -33,6 +39,7 @@ const listen = (port, onMessage) => {
     const TIMEOUT = 10;
     port.on('readable', function () {
         const received = port.read()
+        console.log(received);
         currentBuffer += received
         const now = Date.now()
         clearTimeout(timeOutRef)

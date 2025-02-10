@@ -9,7 +9,12 @@ const initSocket = (server) =>
 {
     return new Promise((resolve, reject) =>
     {
-        io = new Server(server)
+        io = new Server(server, {
+  cors: {
+    origin: "*",
+    methods: ["GET", "POST"]
+  }
+})
         resolve()
     })
 }

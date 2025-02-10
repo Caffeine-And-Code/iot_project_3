@@ -1,14 +1,14 @@
-import React, { createContext, useContext, useState, useEffect } from "react";
-import { io } from "socket.io-client";
-import { getSystemStatus, SystemStatus } from "../../../hooks/getSystemStatus";
+import React, {createContext, useContext, useState, useEffect} from "react";
+import {io} from "socket.io-client";
+import {getSystemStatus, SystemStatus} from "../../../hooks/getSystemStatus";
 import getTemperatures from "../../../hooks/getTemperatures";
 import getWindowPercentage from "../../../hooks/getWindowPercentage";
 import debug from "../../../config/systemVariables";
-import { getArduinoMode, getSystemMode, Modes } from "../../../hooks/getModes";
+import {getArduinoMode, getSystemMode, Modes} from "../../../hooks/getModes";
 
 // il tipo dei dati condivisi
 interface DataContextType {
-    temperature: { letture: number; temperature: number }[];
+    temperature: {letture: number; temperature: number}[];
     systemStatus: SystemStatus;
     windowPercentage: number;
     arduinoMode: Modes;
@@ -27,15 +27,15 @@ export const useDataContext = () => {
     return context;
 };
 
-export const DataProvider = ({ children }: { children: React.ReactNode }) => {
-    const [temperature, setTemperature] = useState<{ letture: number; temperature: number }[]>([]);
+export const DataProvider = ({children}: {children: React.ReactNode}) => {
+    const [temperature, setTemperature] = useState<{letture: number; temperature: number}[]>([]);
     const [systemStatus, setSystemStatus] = useState<SystemStatus>(SystemStatus.Normal);
     const [windowPercentage, setWindowPercentage] = useState<number>(-1);
     const [arduinoMode, setArduinoMode] = useState<Modes>(-1);
     const [frontMode, setFrontMode] = useState<Modes>(-1);
 
     useEffect(() => {
-        const socket = io();
+        const socket = io("http://localhost:3000");
         console.log("socket => ", socket);
 
         // Quando arriva un nuovo dato
@@ -48,7 +48,7 @@ export const DataProvider = ({ children }: { children: React.ReactNode }) => {
             setFrontMode(getSystemMode(msg));
         });
 
-        if(debug){
+        if (debug) {
             // debug mode
             // create an interval to simulate new data every 5 seconds
             setInterval(() => {
@@ -66,9 +66,5 @@ export const DataProvider = ({ children }: { children: React.ReactNode }) => {
         };
     }, []);
 
-    return (
-        <DataContext.Provider value={{ temperature, systemStatus, windowPercentage, arduinoMode, frontMode }}>
-            {children}
-        </DataContext.Provider>
-    );
+    return <DataContext.Provider value={{temperature, systemStatus, windowPercentage, arduinoMode, frontMode}}>{children}</DataContext.Provider>;
 };
