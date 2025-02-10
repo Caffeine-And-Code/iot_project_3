@@ -63,8 +63,14 @@ function sendMessage() {
 function useMessage(message){
     const temp = parseFloat(message.slice(1));
     if (message.startsWith('T') && !isNaN(temp)) {
-        const messageList = document.getElementById('temperature');
-        messageList.textContent = temp;
+        const messageList = document.getElementById('messageList');
+        const listItem = document.createElement('li');
+        listItem.textContent = temp;
+        if (messageList.firstChild) {
+            messageList.insertBefore(listItem, messageList.firstChild);
+        } else {
+            messageList.appendChild(listItem);
+        }
     } else {
         console.warn("Messaggio ignorato: non inizia con 'T' seguito da un float");
     }
