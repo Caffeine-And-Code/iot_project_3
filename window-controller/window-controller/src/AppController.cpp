@@ -24,8 +24,8 @@ void AppController::setup()
     this->stateMachineTask->changeState(Automatic);
 
     this->scheduler->init(100);
-    this->scheduler->addTask(stateMachineTask);
     this->scheduler->addTask(serialTask);
+    this->scheduler->addTask(stateMachineTask);
 }
 
 void AppController::loop()
