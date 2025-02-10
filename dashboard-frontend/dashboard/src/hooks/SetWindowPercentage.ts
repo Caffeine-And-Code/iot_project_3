@@ -1,7 +1,7 @@
 import debug from "../config/systemVariables";
 import { Modes } from "./getModes";
 
-export default async function SetWindowPercentage({percentage}:{percentage:number}) : Promise<boolean|string> {
+export async function SetWindowPercentage({percentage}:{percentage:number}) : Promise<boolean|string> {
     return new Promise((resolve, reject) => {
         if(debug){
             // debug mode
@@ -20,13 +20,7 @@ export default async function SetWindowPercentage({percentage}:{percentage:numbe
         })
             .then((res) => {
                 if (res.ok) {
-                    tryToEnterInAutomatic().then((res) => {
-                        if(res === true){
-                            resolve(true);
-                        } else {
-                            reject(res);
-                        }
-                    });
+                    resolve(true);
                 } else {
                     reject(res.statusText);
                 }
@@ -38,7 +32,7 @@ export default async function SetWindowPercentage({percentage}:{percentage:numbe
     });
 }
 
-async function tryToEnterInAutomatic() : Promise<boolean|string> {
+export async function tryToEnterInAutomatic() : Promise<boolean|string> {
     return new Promise((resolve, reject) => {
             if(debug){
                 // debug mode

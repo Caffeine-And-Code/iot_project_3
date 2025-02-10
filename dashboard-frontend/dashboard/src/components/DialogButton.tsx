@@ -10,8 +10,9 @@ import { TransitionProps } from '@mui/material/transitions';
 import SelectPercentage from './SelectPercentage';
 import tryToEnterInManual from '../hooks/tryToEnterInManual';
 import { useDataContext } from './Layout/DataGetter/DataContext';
-import SetWindowPercentage from '../hooks/SetWindowPercentage';
+import {SetWindowPercentage,tryToEnterInAutomatic} from '../hooks/SetWindowPercentage';
 import { useSnackbar } from 'notistack';
+import { Grid2 } from '@mui/material';
 
 const Transition = React.forwardRef(function Transition(
     props: TransitionProps & {
@@ -26,7 +27,7 @@ function DialogButton() {
   const { enqueueSnackbar } = useSnackbar()
     const [open, setOpen] = React.useState(false);
     const [percentage, setPercentage] = React.useState(0);
-    const { arduinoMode } = useDataContext();
+    const { arduinoMode,frontMode } = useDataContext();
 
     const handlePercentageChange = (value: number) => {
         setPercentage(value);
@@ -59,11 +60,30 @@ function DialogButton() {
     }
   }
 
+  const handleGoAutomatic = async () => {
+    const res = await tryToEnterInAutomatic();
+    if (res === true) {
+      enqueueSnackbar('Entered in Automatic Mode', { variant: 'success' });
+    } else {
+      enqueueSnackbar('Failed to enter in Automatic Mode: '+res, { variant: 'error' }); 
+    }
+  }
+
   return <>
-    <Button 
+    <Grid2 container spacing={2} justifyContent='center' alignItems='center'>  
+      <Grid2 size={{ xs: 12, sm: 6 }}>
+      <Button 
         variant="contained" onClick={()=>handleClickOpen()} loading={arduinoMode == -1}>
         Manual Controls
       </Button>
+      </Grid2>
+      <Grid2 size={{ xs: 12, sm: 6 }}>
+      <Button 
+        variant="contained" onClick={handleGoAutomatic} loading={arduinoMode == -1} disabled={frontMode == 1}>
+        Automatic Controls
+      </Button>
+      </Grid2>
+    </Grid2>
       <Dialog
         open={open}
         TransitionComponent={Transition}
