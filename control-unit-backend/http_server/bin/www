@@ -4,10 +4,12 @@
  * Module dependencies.
  */
 
+const { connectMQTT, sendMQTT } = require('../services/espService');
+
 var getApp = require('../app');
 var debug = require('debug')('http-server:server');
 var http = require('http');
-const { begin } = require("../services/stateService")
+const { begin, processTemperature } = require("../services/stateService")
 const { initSocket } = require("./../socket")
 const testRoutine = require("./testRoutine")
 
@@ -29,7 +31,10 @@ async function main()
    */
 
   server = http.createServer(app);
-  await Promise.all([initSocket(server), begin("COM3")])
+  await begin("COM3")
+  await initSocket(server)
+  await connectMQTT(processTemperature)
+  sendMQTT(0.5)
 
   /**
    * Listen on provided port, on all network interfaces.

@@ -23,7 +23,7 @@ public:
         auto openPercentage = controller->openPercentage;
         if (openPercentage != lastPercentage)
         {
-            controller->window->open(openPercentage);
+
             controller->userLCD->printAutomaticInfo(openPercentage);
             lastPercentage = openPercentage;
         }

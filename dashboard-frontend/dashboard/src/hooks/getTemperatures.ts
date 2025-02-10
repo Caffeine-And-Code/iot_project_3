@@ -18,7 +18,7 @@ export default function getTemperatures(msg: string) : { letture: number; temper
         const temperatures = data["temperatureHistory"];
         return temperatures.map((temperature:number, index:number) => ({
             letture: index,
-            temperature: temperature,
+            temperature: Number(temperature),
         }));
     }
 

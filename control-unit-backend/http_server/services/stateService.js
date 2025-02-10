@@ -1,9 +1,10 @@
 const { initialize, askCommunication, sendOpenPercentage, sendTemperature } = require("./windowControllerService");
 const { modes, states } = require("../enums")
-const {send} = require("../socket")
+const {send} = require("../socket");
+const { sendMQTT } = require("./espService");
 
-const T1 = 20
-const T2 = 40
+const T1 = 5
+const T2 = 10
 
 const F1 = 20
 const F2 = 30
@@ -76,15 +77,26 @@ const getWindowOpenPercentage = (t) => {
 }
 
 const getWindowState = (t) => {
-    if (t < T1) return states.normal
-    if (t >= T1 && t <= T2) return states.hot
-    if (t > T2) {
+    if (t < T1)
+    {
+        sendMQTT(1/3)
+        return states.normal
+    }
+    if (t >= T1 && t <= T2)
+    {
+        sendMQTT(1/2)
+        return states.hot
+    }
+    if (t > T2)
+    {
+        sendMQTT(1/2)
         const ts = Date.now()
         if(lastTooHotTimeStamp === undefined){
             lastTooHotTimeStamp = ts
         }
         
-        if (ts - lastTooHotTimeStamp >= DT){
+        if (ts - lastTooHotTimeStamp >= DT)
+        {
             return states.alarm
         }
         return states.too_hot
@@ -94,7 +106,7 @@ const getWindowState = (t) => {
 
 const saveTemperature = (t) => {
     history.push(t)
-    !SKIP_ARDUINO && sendTemperature(t)
+    !SKIP_ARDUINO && sendTemperature(Math.round(t))
 }
 
 const getTemperatureHistory = () =>
@@ -111,14 +123,15 @@ const getLastTemperature = () =>
     return 0;
 }
 
-const processTemperature = (t) =>
+const processTemperature = async (t) =>
 {
     if (currentState !== states.alarm)
     {
-        if (currentMode === modes.automatic)
+        if (currentMode === modes.automatic && arduinoMode == modes.automatic)
         {
             currentOpenPercentage = getWindowOpenPercentage(t)
             currentState = getWindowState(t)   
+            await sendOpenPercentage(currentOpenPercentage)
         }
     }
     saveTemperature(t)
@@ -148,6 +161,7 @@ const editPercentage = async (percentage) =>
 const resolveAlarm = async () =>
 {
     currentState = states.too_hot
+    lastTooHotTimeStamp = Date.now()
     sendData()
 }
 

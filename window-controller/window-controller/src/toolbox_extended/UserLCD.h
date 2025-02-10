@@ -18,7 +18,7 @@ public:
     {
         this->printCentered("OPEN LEVEL: " + String(openLevelPercentage) + "%", 1);
         this->printCentered("MODE: MANUAL", 2);
-        this->printCentered("TEMPERATURE: " + String(temperature) + "-C", 3);
+        this->printCentered("TEMPERATURE: " + String(temperature) + "C", 3);
     }
 };
 
